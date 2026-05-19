@@ -26,6 +26,7 @@ pub async fn create_qr_code(
     Json(req): Json<PaytmQrCodeRequest>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
     let key = env::var("PAYTM_MERCHANT_KEY").unwrap();
+    let base_url = env::var("BASE_URL").unwrap();
 
     let mut params = BTreeMap::new();
     params.insert("mid".to_string(), req.mid);
@@ -52,7 +53,7 @@ pub async fn create_qr_code(
     println!("Paytm Params: {:#?}", paytm_params);
 
     let response = client
-        .post("https://securestage.paytmpayments.com/paymentservices/qr/create")
+        .post(format!("{}/paymentservices/qr/create", base_url))
         .json(&paytm_params)
         .send()
         .await

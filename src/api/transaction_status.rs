@@ -23,6 +23,7 @@ pub async fn transaction_status(
     Json(req): Json<PaytmTransactionStatusRequest>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
     let key = env::var("PAYTM_MERCHANT_KEY").unwrap();
+    let base_url = env::var("BASE_URL").unwrap();
 
     let mut params = BTreeMap::new();
     params.insert("mid".to_string(), req.mid);
@@ -44,7 +45,7 @@ pub async fn transaction_status(
     println!("Paytm Params: {:#?}", paytm_params);
 
     let response = client
-        .post("https://securestage.paytmpayments.com/v3/order/status")
+        .post(format!("{}/v3/order/status", base_url))
         .json(&paytm_params)
         .send()
         .await
