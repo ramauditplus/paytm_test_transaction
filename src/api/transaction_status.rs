@@ -9,7 +9,6 @@ use std::env;
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PaytmTransactionStatusRequest {
-    mid: String,
     order_id: String,
 }
 
@@ -24,9 +23,10 @@ pub async fn transaction_status(
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
     let key = env::var("PAYTM_MERCHANT_KEY").unwrap();
     let base_url = env::var("BASE_URL").unwrap();
+    let mid = env::var("PAYTM_MERCHANT_ID").unwrap();
 
     let mut params = BTreeMap::new();
-    params.insert("mid".to_string(), req.mid);
+    params.insert("mid".to_string(), mid);
     params.insert("orderId".to_string(), req.order_id);
 
     println!("Params: {:#?}", params);
